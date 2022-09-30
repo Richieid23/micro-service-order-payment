@@ -8,6 +8,22 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
+    public function index(Request $request)
+    {
+        $userId = $request->query('user_id');
+
+        $orders = Order::query();
+
+        $orders->when($userId, function ($query) use ($userId) {
+            return $query->where('user_id', $userId);
+        });
+
+        return \response()->json([
+            'status' => 'success',
+            'data' => $orders->get()
+        ]);
+    }
+
     public function create(Request $request)
     {
         $course = $request->input('course');
